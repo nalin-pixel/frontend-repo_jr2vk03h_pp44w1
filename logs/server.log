@@ -3,29 +3,24 @@
 > vite
 
 
-  VITE v5.4.20  ready in 221 ms
+  VITE v5.4.20  ready in 213 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: http://172.20.55.24:3000/
-7:35:30 AM [vite] Pre-transform error: Transform failed with 1 error:
-/home/workspace/src/components/BackgroundFX.jsx:31:684: ERROR: Expected "}" but found ")"
-7:35:31 AM [vite] ✨ new dependencies optimized: framer-motion, lucide-react
-7:35:31 AM [vite] ✨ optimized dependencies changed. reloading
-7:35:32 AM [vite] Pre-transform error: Transform failed with 1 error:
-/home/workspace/src/components/BackgroundFX.jsx:31:684: ERROR: Expected "}" but found ")"
-The file does not exist at "/home/workspace/node_modules/.vite/deps/chunk-I4MZPW7S.js?v=35394813" which is in the optimize deps directory. The dependency might be incompatible with the dep optimizer. Try adding it to `optimizeDeps.exclude`.
-7:35:33 AM [vite] Internal server error: Transform failed with 1 error:
-/home/workspace/src/components/BackgroundFX.jsx:31:684: ERROR: Expected "}" but found ")"
+7:43:05 AM [vite] Pre-transform error: Transform failed with 1 error:
+/home/workspace/src/components/BackgroundFX.jsx:63:653: ERROR: Expected "}" but found ")"
+7:43:06 AM [vite] Internal server error: Transform failed with 1 error:
+/home/workspace/src/components/BackgroundFX.jsx:63:653: ERROR: Expected "}" but found ")"
   Plugin: vite:esbuild
-  File: /home/workspace/src/components/BackgroundFX.jsx:31:684
+  File: /home/workspace/src/components/BackgroundFX.jsx:63:653
   
   Expected "}" but found ")"
-  29 |  
-  30 |        {/* Subtle grain for tactile feel */}
-  31 |        <div className="absolute inset-0 opacity-[0.06] mix-blend-overlay" style={{ backgroundImage: 'url("data:image/svg+xml;utf8,\n        <svg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'>\n          <filter id=\'n\'>\n            <feTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\' />\n            <feColorMatrix type=\'saturate\' values=\'0\'/>\n            <feComponentTransfer>\n              <feFuncA type=\'table\' tableValues=\'0 0.35\'/>\n            </feComponentTransfer>\n          </filter>\n          <rect width=\'100%\' height=\'100%\' filter=\'url(%23n)\' />\n        </svg>' )' }} />
-     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ^
-  32 |      </div>
-  33 |    )
+  61 |        {/* Subtle grain for tactile feel */}
+  62 |        <motion.div style={{ opacity: grainOpacity }} className="absolute inset-0 mix-blend-overlay" aria-hidden>
+  63 |          <div className="absolute inset-0" style={{ backgroundImage: 'url("data:image/svg+xml;utf8,\n        <svg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'>\n          <filter id=\'n\'>\n            <feTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\' />\n            <feColorMatrix type=\'saturate\' values=\'0\'/>\n            <feComponentTransfer>\n              <feFuncA type=\'table\' tableValues=\'0 0.35\'/>\n            </feComponentTransfer>\n          </filter>\n          <rect width=\'100%\' height=\'100%\' filter=\'url(%23n)\' />\n        </svg>' )' }} />
+     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ^
+  64 |        </motion.div>
+  65 |      </div>
   
       at failureErrorWithLog (/home/workspace/node_modules/esbuild/lib/main.js:1472:15)
       at /home/workspace/node_modules/esbuild/lib/main.js:755:50
