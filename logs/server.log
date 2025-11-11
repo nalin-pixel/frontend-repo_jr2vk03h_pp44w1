@@ -3,9 +3,7 @@
 > vite
 
 
-  VITE v5.4.20  ready in 209 ms
+  VITE v5.4.20  ready in 196 ms
 
   ➜  Local:   http://localhost:3000/
   ➜  Network: http://172.20.55.24:3000/
-7:47:05 AM [vite] Pre-transform error: Transform failed with 1 error:
-/home/workspace/src/components/BackgroundFX.jsx:63:653: ERROR: Expected "}" but found ")"

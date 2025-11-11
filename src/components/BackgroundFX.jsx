@@ -1,15 +1,15 @@
-import { useEffect, useRef } from 'react'
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion'
+import { useEffect, useMemo, useRef } from 'react'
+import { motion, useMotionValue, useTransform, animate, useReducedMotion } from 'framer-motion'
 
-function GlowBlob({ className, delay = 0, x, y }) {
+function GlowBlob({ className, delay = 0, x, y, disabled = false }) {
+  if (disabled) {
+    return <div className={className} />
+  }
   return (
     <motion.div
       style={{ x, y }}
       initial={{ opacity: 0.25, scale: 0.9 }}
-      animate={{
-        opacity: [0.25, 0.4, 0.25],
-        scale: [0.95, 1.05, 0.98, 1],
-      }}
+      animate={{ opacity: [0.25, 0.4, 0.25], scale: [0.95, 1.05, 0.98, 1] }}
       transition={{ duration: 12, repeat: Infinity, delay, ease: 'easeInOut' }}
       className={className}
     />
@@ -17,6 +17,8 @@ function GlowBlob({ className, delay = 0, x, y }) {
 }
 
 export default function BackgroundFX() {
+  const prefersReducedMotion = useReducedMotion()
+
   const x1 = useMotionValue(0)
   const y1 = useMotionValue(0)
   const x2 = useMotionValue(0)
@@ -27,6 +29,7 @@ export default function BackgroundFX() {
   const parallaxRef = useRef(null)
 
   useEffect(() => {
+    if (prefersReducedMotion) return
     const node = parallaxRef.current
     if (!node) return
     const handle = (e) => {
@@ -44,9 +47,15 @@ export default function BackgroundFX() {
     }
     window.addEventListener('mousemove', handle)
     return () => window.removeEventListener('mousemove', handle)
-  }, [x1, y1, x2, y2, x3, y3])
+  }, [x1, y1, x2, y2, x3, y3, prefersReducedMotion])
 
   const grainOpacity = useTransform(x1, [-30, 30], [0.04, 0.07])
+
+  const grainDataUrl = useMemo(() => {
+    const svg = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'>\n  <filter id='n'>\n    <feTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch' />\n    <feColorMatrix type='saturate' values='0'/>\n    <feComponentTransfer>\n      <feFuncA type='table' tableValues='0 0.35'/>\n    </feComponentTransfer>\n  </filter>\n  <rect width='100%' height='100%' filter='url(#n)' />\n</svg>`
+    const encoded = encodeURIComponent(svg)
+    return `url("data:image/svg+xml;utf8,${encoded}")`
+  }, [])
 
   return (
     <div ref={parallaxRef} className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -54,13 +63,13 @@ export default function BackgroundFX() {
       <div className="absolute inset-0 bg-[radial-gradient(65%_60%_at_50%_0%,rgba(168,230,255,0.35),transparent),radial-gradient(45%_45%_at_90%_10%,rgba(180,255,220,0.35),transparent),radial-gradient(60%_60%_at_0%_20%,rgba(230,230,255,0.35),transparent)]" />
 
       {/* Organic floating glows */}
-      <GlowBlob x={x1} y={y1} delay={0} className="absolute -top-20 left-10 h-80 w-80 rounded-full bg-cyan-300/30 blur-3xl" />
-      <GlowBlob x={x2} y={y2} delay={0.4} className="absolute top-40 -right-10 h-96 w-96 rounded-full bg-emerald-300/25 blur-3xl" />
-      <GlowBlob x={x3} y={y3} delay={0.8} className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-300/20 blur-3xl" />
+      <GlowBlob disabled={prefersReducedMotion} x={x1} y={y1} delay={0} className="absolute -top-20 left-10 h-80 w-80 rounded-full bg-cyan-300/30 blur-3xl" />
+      <GlowBlob disabled={prefersReducedMotion} x={x2} y={y2} delay={0.4} className="absolute top-40 -right-10 h-96 w-96 rounded-full bg-emerald-300/25 blur-3xl" />
+      <GlowBlob disabled={prefersReducedMotion} x={x3} y={y3} delay={0.8} className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-indigo-300/20 blur-3xl" />
 
       {/* Subtle grain for tactile feel */}
-      <motion.div style={{ opacity: grainOpacity }} className="absolute inset-0 mix-blend-overlay" aria-hidden>
-        <div className="absolute inset-0" style={{ backgroundImage: 'url("data:image/svg+xml;utf8,\n        <svg xmlns=\'http://www.w3.org/2000/svg\' width=\'160\' height=\'160\' viewBox=\'0 0 160 160\'>\n          <filter id=\'n\'>\n            <feTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\' />\n            <feColorMatrix type=\'saturate\' values=\'0\'/>\n            <feComponentTransfer>\n              <feFuncA type=\'table\' tableValues=\'0 0.35\'/>\n            </feComponentTransfer>\n          </filter>\n          <rect width=\'100%\' height=\'100%\' filter=\'url(%23n)\' />\n        </svg>' )' }} />
+      <motion.div style={{ opacity: prefersReducedMotion ? 0.04 : grainOpacity }} className="absolute inset-0 mix-blend-overlay" aria-hidden>
+        <div className="absolute inset-0" style={{ backgroundImage: grainDataUrl }} />
       </motion.div>
     </div>
   )

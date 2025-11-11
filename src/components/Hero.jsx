@@ -1,12 +1,26 @@
 import React, { Suspense, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 
 // Lazy-load Spline for performance; only loads if a scene URL is provided
 const LazySpline = React.lazy(() => import('@splinetool/react-spline').then(m => ({ default: m.default })))
 
+function Chip({ children, className, style }) {
+  return (
+    <div className={`pointer-events-auto select-none rounded-full border border-white/60 bg-white/70 backdrop-blur px-3 py-1.5 text-xs text-slate-700 shadow-sm ${className || ''}`} style={style}>
+      {children}
+    </div>
+  )
+}
+
 export default function Hero() {
-  const sceneUrl = import.meta.env.VITE_SPLINE_SCENE
+  const sceneUrl = import.meta.env.VITE_SPLINE_SCENE || 'https://prod.spline.design/NZx1rG3Q2tI2zHjJ/scene.splinecode'
   const hasSpline = useMemo(() => typeof sceneUrl === 'string' && sceneUrl.trim().length > 0, [sceneUrl])
+
+  const prefersReducedMotion = useReducedMotion()
+  const { scrollYProgress } = useScroll()
+  const chipY = useTransform(scrollYProgress, [0, 0.4], [0, prefersReducedMotion ? 0 : -30])
+  const chipX = useTransform(scrollYProgress, [0, 0.4], [0, prefersReducedMotion ? 0 : 30])
+  const chipScale = useTransform(scrollYProgress, [0, 0.5], [1, prefersReducedMotion ? 1 : 0.96])
 
   return (
     <section className="relative pt-36 pb-24">
@@ -52,6 +66,16 @@ export default function Hero() {
                   {/* Gentle vignette and glow to blend with our aesthetic */}
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-emerald-300/20 via-transparent to-cyan-300/20" />
                   <div className="pointer-events-none absolute inset-0 ring-1 ring-white/50 rounded-3xl" />
+
+                  {/* Floating UI chips that react subtly to scroll */}
+                  <motion.div style={{ y: chipY, scale: chipScale }} className="absolute left-4 top-4 flex gap-2">
+                    <Chip>Soil Moisture • 32%</Chip>
+                    <Chip className="hidden sm:block">Irrigation • Auto</Chip>
+                  </motion.div>
+                  <motion.div style={{ x: chipX, y: chipY }} className="absolute right-4 bottom-4 flex gap-2">
+                    <Chip>pH • 6.9</Chip>
+                    <Chip className="hidden sm:block">Temp • 19.1°C</Chip>
+                  </motion.div>
                 </Suspense>
               ) : (
                 // Fallback: floating glass cards if no Spline URL provided
